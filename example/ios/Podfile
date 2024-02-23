@@ -48,3 +48,7 @@ target 'NotificationsExtensionExample' do
     )
   end
 end
+
+target 'AppNotiService' do
+  pod 'sendbird-notifications-extension', :path => '../..'
+end

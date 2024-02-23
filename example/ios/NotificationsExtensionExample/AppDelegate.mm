@@ -1,6 +1,8 @@
 #import "AppDelegate.h"
+#import "SendbirdNotificationHelper.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import <UserNotifications/UserNotifications.h>
 
 @implementation AppDelegate
 
@@ -26,6 +28,12 @@
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
+}
+
+// Example
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+  [SendbirdNotificationHelper didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 }
 
 @end
