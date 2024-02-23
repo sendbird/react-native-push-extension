@@ -9,9 +9,7 @@
 
 @implementation SendbirdNotificationHelper
 
-static NSMutableSet *_pushAckedCache;
-extern NSString *const SBDeviceTokenKey;
-NSString *const SBDeviceTokenKey = @"SBDeviceToken";
+static NSString *const SBDeviceTokenKey = @"SBDeviceToken";
 
 // Mark: - exports
 //
@@ -108,10 +106,19 @@ NSString *const SBDeviceTokenKey = @"SBDeviceToken";
             return;
         }
 
-        [_pushAckedCache addObject:pushTrackingId];
+        [[self pushAckedCache] addObject:pushTrackingId];
         if (completionHandler) completionHandler(nil);
     }];
     [task resume];
+}
+
++ (NSMutableSet *)pushAckedCache {
+    static NSMutableSet *cacheSet = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        cacheSet = [NSMutableSet set];
+    });
+    return cacheSet;
 }
 
 + (NSString *)stringFromDeviceToken:(NSData *)deviceToken {
