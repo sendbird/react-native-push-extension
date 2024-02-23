@@ -98,6 +98,7 @@ static NSString *const SBDeviceTokenKey = @"SBDeviceToken";
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:bodyData];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:sessionKey forHTTPHeaderField:@"Session-Key"];
 
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
