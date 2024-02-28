@@ -9,7 +9,9 @@
 
 @implementation SendbirdNotificationHelper
 
-static NSString *const SBDeviceTokenKey = @"SBDeviceToken";
+static NSString* SBNExtensionGroup = @"group.name";
+static NSString*const SBNDeviceTokenKey = @"sendbird.device-token";
+static NSString*const SBNExtensionVersion = @"0.0.1";
 
 // Mark: - exports
 //
@@ -17,6 +19,7 @@ static NSString *const SBDeviceTokenKey = @"SBDeviceToken";
 //
 // [SendbirdNotificationHelper markPushNotificationAsDelivered:payload];
 // [SendbirdNotificationHelper didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+// [SendbirdNotificationHelper setAppGroup:suiteName];
 + (void)markPushNotificationAsDelivered:(nonnull NSDictionary *)remoteNotificationPayload
                       completionHandler:(nullable ErrorHandler)completionHandler {
 
@@ -32,15 +35,14 @@ static NSString *const SBDeviceTokenKey = @"SBDeviceToken";
     }
     
     NSString *deviceToken = [self getSavedDeviceToken];
-    NSString *appId = sendbird[@"app_id"];
+    NSString *appId = [sendbird[@"app_id"] uppercaseString];
     NSString *pushTrackingId = sendbird[@"push_tracking_id"];
     NSDictionary *session = sendbird[@"session_key"];
     NSString *sessionKey = session[@"key"];
     NSArray *sessionTopics = session[@"topics"];
 
     if (![appId isKindOfClass:[NSString class]] || ![pushTrackingId isKindOfClass:[NSString class]] ||
-        ![session isKindOfClass:[NSDictionary class]] || ![sessionKey isKindOfClass:[NSString class]] ||
-        ![sessionTopics isKindOfClass:[NSArray class]]) {
+        ![sessionKey isKindOfClass:[NSString class]] || ![sessionTopics isKindOfClass:[NSArray class]]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completionHandler) {
                 completionHandler(error);
@@ -58,7 +60,7 @@ static NSString *const SBDeviceTokenKey = @"SBDeviceToken";
         return;
     }
     
-    [self sendPushDeliveryWithSessionKey:sessionKey 
+    [self sendPushDeliveryWithSessionKey:sessionKey
                                    appId:appId
                              deviceToken:deviceToken
                           pushTrackingId:pushTrackingId
@@ -68,9 +70,13 @@ static NSString *const SBDeviceTokenKey = @"SBDeviceToken";
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     NSString *tokenString = [self stringFromDeviceToken:deviceToken];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:tokenString forKey:SBDeviceTokenKey];
+    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SBNExtensionGroup];
+    [defaults setObject:tokenString forKey:SBNDeviceTokenKey];
     [defaults synchronize];
+}
+
++ (void)setAppGroup:(NSString *)suiteName {
+    SBNExtensionGroup = suiteName;
 }
 
 // Mark: - internal
@@ -79,31 +85,33 @@ static NSString *const SBDeviceTokenKey = @"SBDeviceToken";
                            deviceToken:(nullable NSString *)deviceToken
                         pushTrackingId:(nullable NSString *)pushTrackingId
                      completionHandler:(nullable ErrorHandler)completionHandler {
-    NSString *urlString = [NSString stringWithFormat:@"https://api-%@.sendbird.com/v3/sdk/push_delivery", appId];
-    NSURL *url = [NSURL URLWithString:urlString];
-
-    NSDictionary *bodyParameters = @{
-        @"device_token": deviceToken,
-        @"push_tracking_id": pushTrackingId
-    };
-    NSError *error;
-    NSData *bodyData = [NSJSONSerialization dataWithJSONObject:bodyParameters options:0 error:&error];
-
-    if (!bodyData && completionHandler) {
-        completionHandler(error);
-        return;
-    }
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api-%@.sendbird.com/v3/sdk/push_delivery", appId]];
+    NSData *body = [NSJSONSerialization dataWithJSONObject:@{@"device_token": deviceToken, @"push_tracking_id": pushTrackingId} options:kNilOptions error:nil];
 
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:bodyData];
+    [request setHTTPBody:body];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:sessionKey forHTTPHeaderField:@"Session-Key"];
+    [request setValue:[NSString stringWithFormat:@"device_os_platform=ios&os_version=%@&extension_sdk_info=notifications/react-native/%@", [[UIDevice currentDevice] systemVersion], SBNExtensionVersion] forHTTPHeaderField:@"SB-SDK-User-Agent"];
+    [request setValue:[NSString stringWithFormat:@"%lld", (long long)([[NSDate date] timeIntervalSince1970] * 1000)] forHTTPHeaderField:@"Request-Sent-Timestamp"];
 
     NSURLSession *session = [NSURLSession sharedSession];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error && completionHandler) {
             completionHandler(error);
+            return;
+        }
+        
+        NSDictionary *body = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+        
+        BOOL isError = [body[@"error"] boolValue];
+        NSString *message = body[@"message"];
+        NSInteger code = [body[@"code"] integerValue];
+        if (isError && completionHandler) {
+            NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: message };
+            NSError *responseError = [NSError errorWithDomain:@"SendbirdNotificationHelper" code:code userInfo:userInfo];
+            completionHandler(responseError);
             return;
         }
 
@@ -134,8 +142,8 @@ static NSString *const SBDeviceTokenKey = @"SBDeviceToken";
 }
 
 + (NSString *)getSavedDeviceToken {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *savedToken = [defaults objectForKey:SBDeviceTokenKey];
+    NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SBNExtensionGroup];
+    NSString *savedToken = [defaults objectForKey:SBNDeviceTokenKey];
     
     if (savedToken) {
         return savedToken;

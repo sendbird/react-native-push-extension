@@ -20,13 +20,13 @@
 - (void)didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
     self.contentHandler = contentHandler;
     self.bestAttemptContent = [request.content mutableCopy];
-    
-    // Modify the notification content here...
     self.bestAttemptContent.title = [NSString stringWithFormat:@"%@ [modified]", self.bestAttemptContent.title];
-    
     self.contentHandler(self.bestAttemptContent);
   
-    // Example
+    // NOTE: set app group to share device token
+    [SendbirdNotificationHelper setAppGroup:@"group.sample.chat.react-native"];
+  
+    // NOTE: pass notification payload
     [SendbirdNotificationHelper markPushNotificationAsDelivered:self.bestAttemptContent.userInfo completionHandler:nil];
 }
 
