@@ -35,11 +35,16 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
     }
     
     NSString *deviceToken = [self getSavedDeviceToken];
-    NSString *appId = [sendbird[@"app_id"] uppercaseString];
+    NSString *appId = sendbird[@"app_id"];
     NSString *pushTrackingId = sendbird[@"push_tracking_id"];
     NSDictionary *session = sendbird[@"session_key"];
     NSString *sessionKey = session[@"key"];
     NSArray *sessionTopics = session[@"topics"];
+    
+    if ([[self pushAckedCache] valueForKey:pushTrackingId]) {
+        // ignore
+        return;
+    }
 
     if (![appId isKindOfClass:[NSString class]] || ![pushTrackingId isKindOfClass:[NSString class]] ||
         ![sessionKey isKindOfClass:[NSString class]] || ![sessionTopics isKindOfClass:[NSArray class]]) {
@@ -115,19 +120,19 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
             return;
         }
 
-        [[self pushAckedCache] addObject:pushTrackingId];
+        [[self pushAckedCache] setValue:pushTrackingId forKey:pushTrackingId];
         if (completionHandler) completionHandler(nil);
     }];
     [task resume];
 }
 
-+ (NSMutableSet *)pushAckedCache {
-    static NSMutableSet *cacheSet = nil;
++ (NSMutableDictionary *)pushAckedCache {
+    static NSMutableDictionary *cacheDict = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        cacheSet = [NSMutableSet set];
+        cacheDict = [NSMutableDictionary dictionary];
     });
-    return cacheSet;
+    return cacheDict;
 }
 
 + (NSString *)stringFromDeviceToken:(NSData *)deviceToken {
