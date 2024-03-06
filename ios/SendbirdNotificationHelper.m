@@ -40,6 +40,10 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
     NSString *sessionKey = session[@"key"];
     NSArray *sessionTopics = session[@"topics"];
     
+    NSString *channelKey = sendbird[@"notification_channel_key"];
+    NSString *templateKey = sendbird[@"notification_template_key"];
+    NSNumber *notificationEventDeadline = sendbird[@"notification_event_deadline"];
+    
     if ([[self pushAckedCache] valueForKey:pushTrackingId]) {
         // ignore
         return;
@@ -68,6 +72,9 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
                                    appId:appId
                              deviceToken:deviceToken
                           pushTrackingId:pushTrackingId
+                              channelKey:channelKey
+                             templateKey:templateKey
+               notificationEventDeadline:notificationEventDeadline
                        completionHandler:completionHandler];
 }
 
@@ -85,11 +92,20 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
 // Mark: - internal
 + (void)sendPushDeliveryWithSessionKey:(NSString *)sessionKey
                                  appId:(NSString *)appId
-                           deviceToken:(nullable NSString *)deviceToken
-                        pushTrackingId:(nullable NSString *)pushTrackingId
+                           deviceToken:(NSString *)deviceToken
+                        pushTrackingId:(NSString *)pushTrackingId
+                            channelKey:(nullable NSString *)channelKey
+                           templateKey:(nullable NSString *)templateKey
+             notificationEventDeadline:(nullable NSNumber *)notificationEventDeadline
                      completionHandler:(nullable ErrorHandler)completionHandler {
+    
+    NSMutableDictionary *dict = [@{@"device_token": deviceToken, @"push_tracking_id": pushTrackingId} mutableCopy];
+    if (channelKey != nil) [dict setObject:channelKey forKey:@"channel_key"];
+    if (templateKey != nil) [dict setObject:templateKey forKey:@"template_key"];
+    if (notificationEventDeadline != nil) [dict setObject:notificationEventDeadline forKey:@"notification_event_deadline"];
+    
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api-%@.sendbird.com/v3/sdk/push_delivery", appId]];
-    NSData *body = [NSJSONSerialization dataWithJSONObject:@{@"device_token": deviceToken, @"push_tracking_id": pushTrackingId} options:kNilOptions error:nil];
+    NSData *body = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:nil];
 
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
