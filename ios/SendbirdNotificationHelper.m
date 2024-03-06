@@ -22,9 +22,8 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
 // [SendbirdNotificationHelper setAppGroup:suiteName];
 + (void)markPushNotificationAsDelivered:(nonnull NSDictionary *)remoteNotificationPayload
                       completionHandler:(nullable ErrorHandler)completionHandler {
-
     NSDictionary *data = @{ NSLocalizedDescriptionKey: @"Malformed data" };
-    NSError *error = [NSError errorWithDomain:@"SendbirdNotificationHelper" code:1 userInfo:data];
+    NSError *error = [NSError errorWithDomain:@"SendbirdNotificationHelper" code:800130 userInfo:data];
 
     NSDictionary *sendbird = remoteNotificationPayload[@"sendbird"];
     if (![sendbird isKindOfClass:[NSDictionary class]]) {
@@ -77,7 +76,6 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
     NSString *tokenString = [self stringFromDeviceToken:deviceToken];
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SBNExtensionGroup];
     [defaults setObject:tokenString forKey:SBNDeviceTokenKey];
-    [defaults synchronize];
 }
 
 + (void)setAppGroup:(NSString *)suiteName {
