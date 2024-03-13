@@ -1,7 +1,7 @@
 {
-  "name": "@sendbird/notifications-react-native-extension",
-  "version": "1.0.0-rc.0",
-  "description": "Notifications extension for React-Native",
+  "name": "@sendbird/react-native-push-extension",
+  "version": "1.0.0-beta.0",
+  "description": "Push Notifications extension for React-Native",
   "files": [
     "ios",
     "cpp",
@@ -22,7 +22,6 @@
     "test": "jest",
     "typecheck": "tsc --noEmit",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
-    "prepare": "bob build",
     "release": "release-it"
   },
   "keywords": [
