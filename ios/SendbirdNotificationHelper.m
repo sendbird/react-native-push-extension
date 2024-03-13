@@ -32,18 +32,18 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
         });
         return;
     }
-    
+
     NSString *deviceToken = [self getSavedDeviceToken];
     NSString *appId = sendbird[@"app_id"];
     NSString *pushTrackingId = sendbird[@"push_tracking_id"];
     NSDictionary *session = sendbird[@"session_key"];
     NSString *sessionKey = session[@"key"];
     NSArray *sessionTopics = session[@"topics"];
-    
+
     NSString *channelKey = sendbird[@"notification_channel_key"];
     NSString *templateKey = sendbird[@"notification_template_key"];
     NSNumber *notificationEventDeadline = sendbird[@"notification_event_deadline"];
-    
+
     if ([[self pushAckedCache] valueForKey:pushTrackingId]) {
         // ignore
         return;
@@ -67,7 +67,7 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
         });
         return;
     }
-    
+
     [self sendPushDeliveryWithSessionKey:sessionKey
                                    appId:appId
                              deviceToken:deviceToken
@@ -98,12 +98,12 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
                            templateKey:(nullable NSString *)templateKey
              notificationEventDeadline:(nullable NSNumber *)notificationEventDeadline
                      completionHandler:(nullable ErrorHandler)completionHandler {
-    
+
     NSMutableDictionary *dict = [@{@"device_token": deviceToken, @"push_tracking_id": pushTrackingId} mutableCopy];
-    if (channelKey != nil) [dict setObject:channelKey forKey:@"channel_key"];
-    if (templateKey != nil) [dict setObject:templateKey forKey:@"template_key"];
-    if (notificationEventDeadline != nil) [dict setObject:notificationEventDeadline forKey:@"notification_event_deadline"];
-    
+    if (channelKey != nil && [channelKey isKindOfClass:[NSString class]]) [dict setObject:channelKey forKey:@"channel_key"];
+    if (templateKey != nil && [templateKey isKindOfClass:[NSString class]]) [dict setObject:templateKey forKey:@"template_key"];
+    if (notificationEventDeadline != nil && [notificationEventDeadline isKindOfClass:[NSNumber class]]) [dict setObject:notificationEventDeadline forKey:@"notification_event_deadline"];
+
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://api-%@.sendbird.com/v3/sdk/push_delivery", appId]];
     NSData *body = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:nil];
 
@@ -121,9 +121,9 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
             completionHandler(error);
             return;
         }
-        
+
         NSDictionary *body = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-        
+
         BOOL isError = [body[@"error"] boolValue];
         NSString *message = body[@"message"];
         NSInteger code = [body[@"code"] integerValue];
@@ -152,18 +152,18 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
 + (NSString *)stringFromDeviceToken:(NSData *)deviceToken {
     const char *data = [deviceToken bytes];
     NSMutableString *tokenString = [NSMutableString string];
-    
+
     for (NSUInteger i = 0; i < [deviceToken length]; i++) {
         [tokenString appendFormat:@"%02.2hhX", data[i]];
     }
-    
+
     return [tokenString copy];
 }
 
 + (NSString *)getSavedDeviceToken {
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:SBNExtensionGroup];
     NSString *savedToken = [defaults objectForKey:SBNDeviceTokenKey];
-    
+
     if (savedToken) {
         return savedToken;
     } else {
