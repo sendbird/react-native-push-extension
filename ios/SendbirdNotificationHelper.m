@@ -40,6 +40,7 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
     NSString *sessionKey = session[@"key"];
     NSArray *sessionTopics = session[@"topics"];
 
+    NSNumber *messageId = sendbird[@"message_id"];
     NSString *channelKey = sendbird[@"notification_channel_key"];
     NSString *templateKey = sendbird[@"notification_template_key"];
     NSNumber *notificationEventDeadline = sendbird[@"notification_event_deadline"];
@@ -50,7 +51,8 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
     }
 
     if (![appId isKindOfClass:[NSString class]] || ![pushTrackingId isKindOfClass:[NSString class]] ||
-        ![sessionKey isKindOfClass:[NSString class]] || ![sessionTopics isKindOfClass:[NSArray class]]) {
+        ![messageId isKindOfClass:[NSNumber class]] || ![sessionKey isKindOfClass:[NSString class]] ||
+        ![sessionTopics isKindOfClass:[NSArray class]]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (completionHandler) {
                 completionHandler(error);
@@ -72,6 +74,7 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
                                    appId:appId
                              deviceToken:deviceToken
                           pushTrackingId:pushTrackingId
+                               messageId:messageId
                               channelKey:channelKey
                              templateKey:templateKey
                notificationEventDeadline:notificationEventDeadline
@@ -94,12 +97,13 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
                                  appId:(NSString *)appId
                            deviceToken:(NSString *)deviceToken
                         pushTrackingId:(NSString *)pushTrackingId
+                             messageId:(NSNumber *)messageId
                             channelKey:(nullable NSString *)channelKey
                            templateKey:(nullable NSString *)templateKey
              notificationEventDeadline:(nullable NSNumber *)notificationEventDeadline
                      completionHandler:(nullable ErrorHandler)completionHandler {
 
-    NSMutableDictionary *dict = [@{@"device_token": deviceToken, @"push_tracking_id": pushTrackingId} mutableCopy];
+    NSMutableDictionary *dict = [@{@"device_token": deviceToken, @"push_tracking_id": pushTrackingId, @"message_id":messageId} mutableCopy];
     if (channelKey != nil && [channelKey isKindOfClass:[NSString class]]) [dict setObject:channelKey forKey:@"channel_key"];
     if (templateKey != nil && [templateKey isKindOfClass:[NSString class]]) [dict setObject:templateKey forKey:@"template_key"];
     if (notificationEventDeadline != nil && [notificationEventDeadline isKindOfClass:[NSNumber class]]) [dict setObject:notificationEventDeadline forKey:@"notification_event_deadline"];
