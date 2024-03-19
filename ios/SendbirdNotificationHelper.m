@@ -103,7 +103,7 @@ static NSString*const SBNExtensionVersion = @"0.0.1";
              notificationEventDeadline:(nullable NSNumber *)notificationEventDeadline
                      completionHandler:(nullable ErrorHandler)completionHandler {
 
-    NSMutableDictionary *dict = [@{@"device_token": deviceToken, @"push_tracking_id": pushTrackingId, @"message_id":messageId} mutableCopy];
+    NSMutableDictionary *dict = [@{@"device_token": deviceToken, @"push_tracking_id": pushTrackingId, @"message_id":messageId, @"event_type": @"DELIVERED"} mutableCopy];
     if (channelKey != nil && [channelKey isKindOfClass:[NSString class]]) [dict setObject:channelKey forKey:@"channel_key"];
     if (templateKey != nil && [templateKey isKindOfClass:[NSString class]]) [dict setObject:templateKey forKey:@"template_key"];
     if (notificationEventDeadline != nil && [notificationEventDeadline isKindOfClass:[NSNumber class]]) [dict setObject:notificationEventDeadline forKey:@"notification_event_deadline"];
