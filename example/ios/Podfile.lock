@@ -1111,7 +1111,7 @@ PODS:
     - React-jsi (= 0.73.4)
     - React-logger (= 0.73.4)
     - React-perflogger (= 0.73.4)
-  - sendbird-notifications-extension (0.1.0)
+  - sendbird-notifications-extension (1.0.0-beta.0)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
 
@@ -1368,7 +1368,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: ed48e5faac6751e66ee1261c4bd01643b436f112
   React-utils: 6e5ad394416482ae21831050928ae27348f83487
   ReactCommon: 840a955d37b7f3358554d819446bffcf624b2522
-  sendbird-notifications-extension: d6a993adace1a9a9b73cde2ed6a3f4d63c8cf7ab
+  sendbird-notifications-extension: 7e3599b8bb95259fff5d6668437a933a902afce3
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 1b901a6d6eeba4e8a2e8f308f708691cdb5db312
 
