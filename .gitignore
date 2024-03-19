@@ -4,6 +4,7 @@
 
 # XDE
 .expo/
+.xcode.env.local
 
 # VSCode
 .vscode/
