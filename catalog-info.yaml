@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: react-native-push-extension
+  description: Push Notifications extension for React-Native
+  annotations:
+    github.com/project-slug: sendbird/react-native-push-extension
+spec:
+  type: library
+  lifecycle: production
+  owner: dep-client-platform
+  system: sendbird-chat
