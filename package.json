@@ -34,14 +34,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sendbird/react-native-notifications-extension.git"
+    "url": "git+https://github.com/sendbird/react-native-push-extension.git"
   },
-  "author": "bang9 <support@sendbird.com> (https://github.com/sendbird)",
+  "author": "sendbird <support@sendbird.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sendbird/react-native-notifications-extension/issues"
+    "url": "https://community.sendbird.com"
   },
-  "homepage": "https://github.com/sendbird/react-native-notifications-extension#readme",
+  "homepage": "https://github.com/sendbird/react-native-push-extension#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
