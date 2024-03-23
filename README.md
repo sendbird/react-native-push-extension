@@ -50,10 +50,10 @@ Update the `AppDelegate.h` and `AppDelegate.mm` files to implement UserNotificat
 
 > Note: This step is optional If your app is already using NotificationServiceExtension.
 
-- In the XCode top menu, click **[File > New > Target > Notification Service Extension]** to create it.
-  ![create-extension](./screenshot/create-extension.png)
+In the XCode top menu, click **[File > New > Target > Notification Service Extension]** to create it.
+![create-extension](./screenshot/create-extension.png)
 
-- To link the extension, update the Podfile.
+To link the extension, update the Podfile.
 
 ```ruby
 target 'NotificationServiceExtension' do
@@ -64,7 +64,7 @@ target 'NotificationServiceExtension' do
 end
 ```
 
-- After making the modifications, connect the module to your project with the `npx pod-install` command. Then modify the `NotificationService` file in the NotificationServiceExtension created in XCode.
+After making the modifications, connect the module to your project with the `npx pod-install` command. Then modify the `NotificationService` file in the NotificationServiceExtension created in XCode.
 
 #### objc
 
