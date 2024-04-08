@@ -14,4 +14,5 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/sendbird/react-native-push-extension.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,m,mm}"
+  s.resource_bundles = { "sendbird-notifications-extension_privacy" => "ios/PrivacyInfo.xcprivacy" }
 end
