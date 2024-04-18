@@ -11,7 +11,7 @@
 
 static NSString* SBNExtensionGroup = @"group.name";
 static NSString*const SBNDeviceTokenKey = @"sendbird.device-token";
-static NSString*const SBNExtensionVersion = @"0.0.1";
+static NSString*const SBNExtensionVersion = @"1.0.0";
 
 // Mark: - exports
 //
