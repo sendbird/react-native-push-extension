@@ -197,6 +197,7 @@
 				ED6B62C32B88C7C800AB43E9 /* Sources */,
 				ED6B62C42B88C7C800AB43E9 /* Frameworks */,
 				ED6B62C52B88C7C800AB43E9 /* Resources */,
+				FE7DA3CA249BE6B33567339E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -354,6 +355,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-NotificationsExtensionExample/Pods-NotificationsExtensionExample-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FE7DA3CA249BE6B33567339E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AppNotiService/Pods-AppNotiService-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AppNotiService/Pods-AppNotiService-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AppNotiService/Pods-AppNotiService-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
