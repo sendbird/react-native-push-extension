@@ -48,11 +48,11 @@
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.0.2",
-    "@release-it/conventional-changelog": "^5.0.0",
+    "@release-it/conventional-changelog": "7.0.0",
     "del-cli": "^5.1.0",
     "react": "18.2.0",
-    "react-native": "0.73.4",
-    "release-it": "^15.0.0",
+    "react-native": "0.73.11",
+    "release-it": "16.2.0",
     "turbo": "^1.10.7"
   },
   "peerDependencies": {
